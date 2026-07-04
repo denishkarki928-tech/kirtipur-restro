@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
+<title>Full Menu — The Kirtipur Restro</title>
+<meta name="description" content="The full menu at The Kirtipur Restro — snacks, sekuwa, drinks, lassi, shakes and more. Prices in NPR." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0F0F10;
+    --bg-2:#161617;
+    --gold:#D4AF37;
+    --gold-soft:rgba(212,175,55,.14);
+    --red:#B22222;
+    --cream:#FFF8E7;
+    --text:#f5f2ea;
+    --muted:#9a958a;
+    --line:rgba(212,175,55,.18);
+    --serif:'Playfair Display', serif;
+    --accentf:'Cormorant Garamond', serif;
+    --sans:'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  .topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+    padding:18px clamp(20px,5vw,64px);background:rgba(15,15,16,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  .brand{font-family:var(--serif);font-size:1.15rem;letter-spacing:.04em}
+  .brand em{color:var(--gold);font-style:normal}
+  .back{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .3s}
+  .back:hover{color:var(--gold)}
+
+  .hero{padding:clamp(64px,10vw,120px) 20px 24px;text-align:center}
+  .hero .kicker{font-family:var(--accentf);font-style:italic;font-size:1.2rem;color:var(--gold);letter-spacing:.06em}
+  .hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,4rem);margin:.35em 0 .3em}
+  .hero p{color:var(--muted);font-size:.95rem;max-width:520px;margin:0 auto}
+  .rule{width:72px;height:1px;background:var(--gold);margin:28px auto 0;opacity:.6}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:32px clamp(18px,4vw,48px) 96px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:48px clamp(32px,6vw,88px)}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+
+  .cat{break-inside:avoid;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .cat.in{opacity:1;transform:none}
+  .cat h2{font-family:var(--serif);font-weight:700;font-size:1.35rem;color:var(--cream);
+    display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+  .cat h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .cat .note{font-family:var(--accentf);font-style:italic;color:var(--gold);font-size:1.02rem;margin-bottom:14px}
+  .row{display:flex;align-items:baseline;gap:10px;padding:7px 0;font-size:.94rem}
+  .row .n{color:var(--text)}
+  .row .dots{flex:1;border-bottom:1px dotted rgba(212,175,55,.28);transform:translateY(-4px)}
+  .row .p{color:var(--gold);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* multi-column price table (hard drinks) */
+  .tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+  .tbl th{font-family:var(--accentf);font-style:italic;font-weight:500;color:var(--gold);
+    text-align:right;padding:6px 0 10px;font-size:.98rem;letter-spacing:.03em}
+  .tbl th:first-child{text-align:left}
+  .tbl td{padding:7px 0;border-top:1px solid rgba(212,175,55,.08);text-align:right;
+    color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl td:first-child{text-align:left;color:var(--text);padding-right:10px}
+  .tbl td.na{color:var(--muted);opacity:.5}
+  .full{grid-column:1/-1}
+
+  .fineprint{margin-top:64px;text-align:center;color:var(--muted);font-size:.8rem;letter-spacing:.04em}
+  .fineprint em{font-family:var(--accentf);font-style:italic;color:var(--gold);font-size:.95rem}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html">The <em>Kirtipur</em> Restro</a>
+  <a class="back" href="index.html">&larr; Back to Home</a>
+</header>
+
+<section class="hero">
+  <div class="kicker">from our kitchen &amp; bar</div>
+  <h1>The Full Menu</h1>
+  <p>Every plate and pour we serve — snacks off the flame, skewered sekuwa, cold refreshers and a well-stocked bar. All prices in NPR.</p>
+  <div class="rule"></div>
+</section>
+
+<main class="wrap">
+  <div class="grid">
+
+    <section class="cat">
+      <h2>Chilly Snacks</h2>
+      <div class="note">wok-tossed, fiery &amp; glossy</div>
+      <div class="row"><span class="n">Mutton Chilly</span><span class="dots"></span><span class="p">500</span></div>
+      <div class="row"><span class="n">Chicken Chilly (B/L)</span><span class="dots"></span><span class="p">340</span></div>
+      <div class="row"><span class="n">Chicken Chilly (W/B)</span><span class="dots"></span><span class="p">310</span></div>
+      <div class="row"><span class="n">Pork Chilly</span><span class="dots"></span><span class="p">320</span></div>
+      <div class="row"><span class="n">Buff Chilly</span><span class="dots"></span><span class="p">300</span></div>
+      <div class="row"><span class="n">Buff Sausage Chilly</span><span class="dots"></span><span class="p">270</span></div>
+      <div class="row"><span class="n">Chicken Sausage Chilly</span><span class="dots"></span><span class="p">280</span></div>
+      <div class="row"><span class="n">Sukuti Chilly</span><span class="dots"></span><span class="p">300</span></div>
+      <div class="row"><span class="n">Mushroom Chilly</span><span class="dots"></span><span class="p">230</span></div>
+      <div class="row"><span class="n">Paneer Chilly</span><span class="dots"></span><span class="p">320</span></div>
+      <div class="row"><span class="n">Potato Chilly</span><span class="dots"></span><span class="p">210</span></div>
+      <div class="row"><span class="n">Fish Chilly</span><span class="dots"></span><span class="p">330</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Sekuwa</h2>
+      <div class="note">char-grilled over open flame</div>
+      <div class="row"><span class="n">Mutton Sekuwa</span><span class="dots"></span><span class="p">600</span></div>
+      <div class="row"><span class="n">Chicken Sekuwa</span><span class="dots"></span><span class="p">330</span></div>
+      <div class="row"><span class="n">Pork Sekuwa</span><span class="dots"></span><span class="p">330</span></div>
+      <div class="row"><span class="n">Buff Sekuwa</span><span class="dots"></span><span class="p">320</span></div>
+
+      <h2 style="margin-top:34px">Pakodas</h2>
+      <div class="note">crisp, golden, made to order</div>
+      <div class="row"><span class="n">Veg Pakoda</span><span class="dots"></span><span class="p">160</span></div>
+      <div class="row"><span class="n">Egg Pakoda</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Paneer Pakoda</span><span class="dots"></span><span class="p">300</span></div>
+      <div class="row"><span class="n">Mushroom Pakoda</span><span class="dots"></span><span class="p">250</span></div>
+      <div class="row"><span class="n">Cheese Pakoda</span><span class="dots"></span><span class="p">350</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Fried / Boiled Snacks</h2>
+      <div class="row"><span class="n">Chicken (B/L)</span><span class="dots"></span><span class="p">330</span></div>
+      <div class="row"><span class="n">Chicken (W/B)</span><span class="dots"></span><span class="p">300</span></div>
+      <div class="row"><span class="n">Buff Meatballs</span><span class="dots"></span><span class="p">290</span></div>
+      <div class="row"><span class="n">Chicken Meatballs</span><span class="dots"></span><span class="p">320</span></div>
+      <div class="row"><span class="n">Basa Fish Boneless</span><span class="dots"></span><span class="p">310</span></div>
+      <div class="row"><span class="n">Basa Fish with Bone</span><span class="dots"></span><span class="p">330</span></div>
+      <div class="row"><span class="n">Fish Finger Chips</span><span class="dots"></span><span class="p">320</span></div>
+      <div class="row"><span class="n">Chicken Pangra</span><span class="dots"></span><span class="p">250</span></div>
+      <div class="row"><span class="n">Pork</span><span class="dots"></span><span class="p">320</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Veg Snacks</h2>
+      <div class="row"><span class="n">Bhatmas / Peanuts Sadheko</span><span class="dots"></span><span class="p">160</span></div>
+      <div class="row"><span class="n">Aalu Sadheko</span><span class="dots"></span><span class="p">150</span></div>
+      <div class="row"><span class="n">Finger Chips</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Dry Papad</span><span class="dots"></span><span class="p">60</span></div>
+      <div class="row"><span class="n">Fry Papad</span><span class="dots"></span><span class="p">70</span></div>
+      <div class="row"><span class="n">Masala Papad</span><span class="dots"></span><span class="p">160</span></div>
+      <div class="row"><span class="n">Green Salad</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Fruits Salad</span><span class="dots"></span><span class="p">300</span></div>
+      <div class="row"><span class="n">Cashew Nuts (Kaju) Fry</span><span class="dots"></span><span class="p">400</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Tandoori</h2>
+      <div class="note">from the clay oven — Indian dish</div>
+      <div class="row"><span class="n">Chicken Tandoori (Quarter)</span><span class="dots"></span><span class="p">190</span></div>
+      <div class="row"><span class="n">Chicken Tandoori (Half)</span><span class="dots"></span><span class="p">380</span></div>
+      <div class="row"><span class="n">Chicken Tandoori (Full)</span><span class="dots"></span><span class="p">750</span></div>
+      <div class="row"><span class="n">Chicken Tikka</span><span class="dots"></span><span class="p">380</span></div>
+      <div class="row"><span class="n">Fish Tikka</span><span class="dots"></span><span class="p">380</span></div>
+      <div class="row"><span class="n">Paneer Tikka</span><span class="dots"></span><span class="p">330</span></div>
+
+      <h2 style="margin-top:34px">Khana Set</h2>
+      <div class="note">complete thali, served with sides</div>
+      <div class="row"><span class="n">Veg Khana Set</span><span class="dots"></span><span class="p">250</span></div>
+      <div class="row"><span class="n">Chicken Khana Set</span><span class="dots"></span><span class="p">360</span></div>
+      <div class="row"><span class="n">Fish Khana Set</span><span class="dots"></span><span class="p">460</span></div>
+      <div class="row"><span class="n">Mutton Khana Set</span><span class="dots"></span><span class="p">520</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Veg Curry</h2>
+      <table class="tbl">
+        <thead><tr><th>Dish</th><th>Half</th><th>Full</th></tr></thead>
+        <tbody>
+          <tr><td>Dal Fry</td><td>50</td><td>80</td></tr>
+          <tr><td>Aalu Matar</td><td>75</td><td>140</td></tr>
+          <tr><td>Aalu Chana</td><td>75</td><td>140</td></tr>
+          <tr><td>Chana Masala</td><td class="na">&mdash;</td><td>180</td></tr>
+          <tr><td>Mix Veg</td><td>95</td><td>190</td></tr>
+          <tr><td>Matar Paneer</td><td>95</td><td>180</td></tr>
+          <tr><td>Palak Paneer</td><td class="na">&mdash;</td><td>230</td></tr>
+          <tr><td>Paneer Butter Masala</td><td class="na">&mdash;</td><td>280</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="margin-top:34px">Non-Veg Curry</h2>
+      <table class="tbl">
+        <thead><tr><th>Dish</th><th>Half</th><th>Full</th></tr></thead>
+        <tbody>
+          <tr><td>Chicken Curry</td><td>120</td><td>210</td></tr>
+          <tr><td>Chicken Butter Masala</td><td class="na">&mdash;</td><td>310</td></tr>
+          <tr><td>Mutton Curry</td><td class="na">&mdash;</td><td>350</td></tr>
+          <tr><td>Fish Curry</td><td class="na">&mdash;</td><td>360</td></tr>
+          <tr><td>Egg / Omelet Curry</td><td class="na">&mdash;</td><td>140</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="cat">
+      <h2>Naan &amp; Roti</h2>
+      <div class="note">baked fresh in the tandoor</div>
+      <div class="row"><span class="n">Tandoori Roti</span><span class="dots"></span><span class="p">30</span></div>
+      <div class="row"><span class="n">Butter Roti</span><span class="dots"></span><span class="p">40</span></div>
+      <div class="row"><span class="n">Plain Naan</span><span class="dots"></span><span class="p">45</span></div>
+      <div class="row"><span class="n">Butter Naan</span><span class="dots"></span><span class="p">65</span></div>
+      <div class="row"><span class="n">Aalu Naan</span><span class="dots"></span><span class="p">70</span></div>
+      <div class="row"><span class="n">Aalu Paratha</span><span class="dots"></span><span class="p">70</span></div>
+      <div class="row"><span class="n">Garlic Naan</span><span class="dots"></span><span class="p">70</span></div>
+      <div class="row"><span class="n">Buff Keema Naan</span><span class="dots"></span><span class="p">90</span></div>
+      <div class="row"><span class="n">Chicken Keema Naan</span><span class="dots"></span><span class="p">110</span></div>
+      <div class="row"><span class="n">Paneer Naan</span><span class="dots"></span><span class="p">90</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Keema Noodles</h2>
+      <div class="row"><span class="n">Buff Keema Noodles</span><span class="dots"></span><span class="p">210</span></div>
+      <div class="row"><span class="n">Chicken Keema Noodles</span><span class="dots"></span><span class="p">220</span></div>
+
+      <h2 style="margin-top:34px">Corn Dog</h2>
+      <div class="row"><span class="n">Buff Corndog</span><span class="dots"></span><span class="p">140</span></div>
+      <div class="row"><span class="n">Chicken Corndog</span><span class="dots"></span><span class="p">145</span></div>
+      <div class="row"><span class="n">Cheese Corndog</span><span class="dots"></span><span class="p">150</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Lassi</h2>
+      <div class="row"><span class="n">Sweet Lassi</span><span class="dots"></span><span class="p">130</span></div>
+      <div class="row"><span class="n">Mango Lassi</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Banana Lassi</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Mango Banana Lassi</span><span class="dots"></span><span class="p">200</span></div>
+      <div class="row"><span class="n">Chocolate Lassi</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Vanilla Lassi</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Strawberry Lassi</span><span class="dots"></span><span class="p">180</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Milk Shakes</h2>
+      <div class="row"><span class="n">Oreo Shake</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Strawberry Milk Shake</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Caramel Milk Shake</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Chocolate Milk Shake</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Vanilla Milk Shake</span><span class="dots"></span><span class="p">180</span></div>
+      <div class="row"><span class="n">Ice Cream</span><span class="dots"></span><span class="p">190</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Namaste Beverage</h2>
+      <div class="row"><span class="n">Milk Coffee</span><span class="dots"></span><span class="p">85</span></div>
+      <div class="row"><span class="n">Black Coffee</span><span class="dots"></span><span class="p">65</span></div>
+      <div class="row"><span class="n">Milk Tea</span><span class="dots"></span><span class="p">70</span></div>
+      <div class="row"><span class="n">Black Tea</span><span class="dots"></span><span class="p">50</span></div>
+      <div class="row"><span class="n">Hot Lemon</span><span class="dots"></span><span class="p">70</span></div>
+      <div class="row"><span class="n">Hot Lemon with Honey</span><span class="dots"></span><span class="p">130</span></div>
+      <div class="row"><span class="n">Coke / Fanta / Sprite / Dew</span><span class="dots"></span><span class="p">75</span></div>
+      <div class="row"><span class="n">Slice</span><span class="dots"></span><span class="p">75</span></div>
+      <div class="row"><span class="n">Jambo</span><span class="dots"></span><span class="p">500</span></div>
+      <div class="row"><span class="n">Red Bull</span><span class="dots"></span><span class="p">150</span></div>
+      <div class="row"><span class="n">Badam Juice</span><span class="dots"></span><span class="p">150</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Cold Tea &amp; Refresher</h2>
+      <div class="row"><span class="n">Lemonade <small style="color:var(--muted)">(Sprite / lemon, mint, honey)</small></span><span class="dots"></span><span class="p">150</span></div>
+      <div class="row"><span class="n">Cold Coffee <small style="color:var(--muted)">(milk, coffee, ice cream)</small></span><span class="dots"></span><span class="p">170</span></div>
+      <div class="row"><span class="n">Lemon Ice Tea</span><span class="dots"></span><span class="p">280</span></div>
+      <div class="row"><span class="n">Lemon Soda</span><span class="dots"></span><span class="p">120</span></div>
+
+      <h2 style="margin-top:34px">Hookah</h2>
+      <div class="row"><span class="n">Any Flavour</span><span class="dots"></span><span class="p">450</span></div>
+    </section>
+
+    <section class="cat full">
+      <h2>Hard Drinks</h2>
+      <div class="note">served 60&nbsp;ml &middot; quarter &middot; half &middot; full &mdash; prices in NPR</div>
+      <table class="tbl">
+        <thead>
+          <tr><th>Label</th><th>60 ml</th><th>Quarter</th><th>Half</th><th>Full</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Old Durbar Black</td><td>400</td><td>1200</td><td>2400</td><td>4700</td></tr>
+          <tr><td>Old Durbar</td><td>330</td><td>950</td><td>1900</td><td>3800</td></tr>
+          <tr><td>Signature Green</td><td>330</td><td>900</td><td>1800</td><td>3600</td></tr>
+          <tr><td>Signature Red</td><td>340</td><td>750</td><td>1900</td><td>3800</td></tr>
+          <tr><td>8848 Vodka</td><td>310</td><td>850</td><td>1700</td><td>3400</td></tr>
+          <tr><td>Ruslan Vodka</td><td>310</td><td>850</td><td>1700</td><td>3400</td></tr>
+          <tr><td>Khukuri Rum</td><td>290</td><td>800</td><td>1600</td><td>3200</td></tr>
+          <tr><td>Blue Riband</td><td>230</td><td>700</td><td>1400</td><td>2800</td></tr>
+          <tr><td>Blue Diamond</td><td>160</td><td>450</td><td>900</td><td>1800</td></tr>
+          <tr><td>Golden Oak / V</td><td>160</td><td>450</td><td>900</td><td>1800</td></tr>
+          <tr><td>Tequila Shot</td><td>500</td><td class="na">&mdash;</td><td class="na">&mdash;</td><td class="na">&mdash;</td></tr>
+          <tr><td>Imported Black Label</td><td class="na">&mdash;</td><td>2600</td><td>5100</td><td>10000</td></tr>
+          <tr><td>Red Label</td><td class="na">&mdash;</td><td>2000</td><td>4000</td><td>8000</td></tr>
+          <tr><td>Highlander</td><td>160</td><td>450</td><td>900</td><td>1800</td></tr>
+          <tr><td>Mustang</td><td>160</td><td>450</td><td>900</td><td>1800</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="cat">
+      <h2>Beer</h2>
+      <div class="row"><span class="n">Carlsberg</span><span class="dots"></span><span class="p">700</span></div>
+      <div class="row"><span class="n">Tuborg</span><span class="dots"></span><span class="p">650</span></div>
+      <div class="row"><span class="n">Gorkha Strong</span><span class="dots"></span><span class="p">550</span></div>
+      <div class="row"><span class="n">Mustang</span><span class="dots"></span><span class="p">550</span></div>
+      <div class="row"><span class="n">Nepal Ice</span><span class="dots"></span><span class="p">550</span></div>
+      <div class="row"><span class="n">Budweiser</span><span class="dots"></span><span class="p">550</span></div>
+      <div class="row"><span class="n">Barashinge</span><span class="dots"></span><span class="p">600</span></div>
+      <div class="row"><span class="n">Apple Cider</span><span class="dots"></span><span class="p">250</span></div>
+    </section>
+
+    <section class="cat">
+      <h2>Wine</h2>
+      <div class="row"><span class="n">Black Stoma / Divine / Hinwa</span><span class="dots"></span><span class="p">850</span></div>
+      <div class="row"><span class="n">Big Master <small style="color:var(--muted)">(cherry / apple / mix)</small></span><span class="dots"></span><span class="p">1100</span></div>
+    </section>
+
+  </div>
+
+  <p class="fineprint"><em>Namaste.</em> &nbsp;All prices in Nepali Rupees. Menu items and prices may change seasonally — please ask your server for today's specials.</p>
+</main>
+
+<script>
+// Gentle scroll reveal — no-fail: if IntersectionObserver is missing, show everything.
+(function () {
+  var cats = document.querySelectorAll('.cat');
+  if (!('IntersectionObserver' in window)) {
+    cats.forEach ? cats.forEach(function (c) { c.classList.add('in'); }) : null;
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  cats.forEach(function (c) { io.observe(c); });
+})();
+</script>
+</body>
+</html>

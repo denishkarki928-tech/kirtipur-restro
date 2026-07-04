@@ -1,0 +1,53 @@
+name: Validate site
+
+# Runs on every push and PR to main. Does not deploy — GitHub Pages deploys
+# from main on its own. Catches malformed HTML and dead internal links.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  html:
+    name: Validate HTML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate HTML5
+        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
+        with:
+          root: .
+          blacklist: assets node_modules .git
+          css: false
+
+  links:
+    name: Check links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Internal links/asset paths are blocking; external links are checked
+      # informationally in a separate pass to avoid bot-block false failures.
+      - name: Check internal links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --offline
+            --include-fragments
+            --no-progress
+            './*.html'
+          fail: true
+      - name: Check external links (informational)
+        uses: lycheeverse/lychee-action@v2
+        continue-on-error: true
+        with:
+          args: >-
+            --no-progress
+            --max-retries 2
+            --accept 200,206,301,302,307,308,403,429
+            './*.html'
+          fail: false
