@@ -256,6 +256,7 @@ if (self !== top) { try { top.location.replace(self.location.href); } catch (e) 
     background:linear-gradient(transparent,rgba(0,0,0,.72));opacity:0;transition:opacity .5s}
   .m-item:hover::after{opacity:1}
   .m-item .ph{display:flex;align-items:center;justify-content:center;color:rgba(255,248,231,.16);font-family:var(--serif);font-size:1rem;letter-spacing:.14em;text-transform:uppercase}
+  .m-item img{width:100%;object-fit:cover;display:block}
   .g1{--g:linear-gradient(150deg,#3a2410,#170f07)} .g2{--g:linear-gradient(150deg,#301410,#120807)}
   .g3{--g:linear-gradient(150deg,#2b2210,#131007)} .g4{--g:linear-gradient(150deg,#20260f,#0d1007)}
   .g5{--g:linear-gradient(150deg,#33180f,#150a06)} .g6{--g:linear-gradient(150deg,#2e2413,#120e07)}
@@ -567,7 +568,7 @@ if (self !== top) { try { top.location.replace(self.location.href); } catch (e) 
     <h2 class="title reveal">Moments from <em>the house</em></h2>
     <!-- Replace .ph divs with <img> tags when restaurant photos are ready -->
     <div class="masonry reveal" id="masonry">
-      <div class="m-item g1 h-m" data-cap="Sekuwa over open coals" data-hover><div class="ph h-m">Photo 01</div></div>
+      <div class="m-item g1 h-m" data-cap="Sekuwa over open coals" data-hover><img class="h-m" src="assets/img/sekuwa.jpg" alt="Char-grilled Nepali chicken sekuwa skewers on a slate plate with onion, chili, lime and achar" loading="lazy" /></div>
       <div class="m-item g2 h-l" data-cap="Mutton chilly, table three" data-hover><div class="ph h-l">Photo 02</div></div>
       <div class="m-item g3 h-s" data-cap="Naan hot from the tandoor" data-hover><div class="ph h-s">Photo 03</div></div>
       <div class="m-item g4 h-m" data-cap="Evening at the Restro" data-hover><div class="ph h-m">Photo 04</div></div>
@@ -932,7 +933,9 @@ document.getElementById('filters').addEventListener('click',e=>{
   const lb=document.getElementById('lightbox'),card=document.getElementById('lbCard'),cap=document.getElementById('lbCap');
   document.getElementById('masonry').addEventListener('click',e=>{
     const it=e.target.closest('.m-item');if(!it)return;
-    card.style.background=getComputedStyle(it).backgroundImage;
+    const im=it.querySelector('img');
+    if(im){card.style.background='#000 url("'+im.getAttribute('src')+'") center/cover no-repeat';}
+    else{card.style.background=getComputedStyle(it).backgroundImage;}
     cap.textContent=it.dataset.cap;
     lb.classList.add('open');
   });
