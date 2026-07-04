@@ -107,6 +107,8 @@ if (self !== top) { try { top.location.replace(self.location.href); } catch (e) 
   .candle{position:absolute;width:6px;height:6px;border-radius:50%;background:#ffc87a;box-shadow:0 0 22px 9px rgba(255,170,70,.35);animation:flicker 3.4s ease-in-out infinite}
   @keyframes flicker{0%,100%{opacity:.85;transform:scale(1)}30%{opacity:.55;transform:scale(.86)}60%{opacity:1;transform:scale(1.08)}80%{opacity:.7}}
   #particles{position:absolute;inset:0;z-index:1;pointer-events:none}
+  #hero3d{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.4s ease}
+  #hero3d.on{opacity:1}
   .grain{position:fixed;inset:0;z-index:2;opacity:.05;pointer-events:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
   .hero__inner{position:relative;z-index:3;max-width:1100px}
@@ -378,6 +380,7 @@ if (self !== top) { try { top.location.replace(self.location.href); } catch (e) 
 <!-- ================= HERO ================= -->
 <section class="hero" id="top">
   <div class="hero__amb" data-parallax></div>
+  <canvas id="hero3d" aria-hidden="true"></canvas>
   <div class="candle" style="left:12%;top:64%"></div>
   <div class="candle" style="left:20%;top:78%;animation-delay:.8s"></div>
   <div class="candle" style="left:84%;top:58%;animation-delay:1.6s"></div>
@@ -700,6 +703,7 @@ if (self !== top) { try { top.location.replace(self.location.href); } catch (e) 
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/vendor/ScrollTrigger.min.js"></script>
 <script src="assets/vendor/lenis.min.js"></script>
+<script src="assets/vendor/three.min.js"></script>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1012,6 +1016,132 @@ document.querySelectorAll('[data-magnetic]').forEach(el=>{
     },{rootMargin:'200px'});
     io.observe(frame);
   }else arm();
+})();
+</script>
+
+<script>
+/* ============ 3D hero — floating lanterns & golden embers ============
+   No-fail: needs vendored Three.js + WebGL. If either is missing, we bail
+   silently and the original 2D particle hero keeps running untouched.
+   prefers-reduced-motion → render one static frame, no animation loop. */
+(function () {
+  const canvas = document.getElementById('hero3d');
+  if (!canvas || !window.THREE) return;
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
+  } catch (e) { return; }
+
+  const reduce3d = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hero = canvas.parentElement;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+  camera.position.set(0, 0, 16);
+
+  // soft round glow sprite, drawn on a canvas (CSP-safe, no external asset)
+  function glowTex(inner, outer) {
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const g = c.getContext('2d');
+    const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grd.addColorStop(0, inner); grd.addColorStop(0.35, outer); grd.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = grd; g.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(c); t.needsUpdate = true; return t;
+  }
+  const emberTex = glowTex('rgba(255,244,214,1)', 'rgba(212,175,55,.55)');
+  const lampTex  = glowTex('rgba(255,214,150,1)', 'rgba(224,138,60,.5)');
+
+  // --- golden ember field ---
+  const N = 420, pos = new Float32Array(N * 3), col = new Float32Array(N * 3), seed = [];
+  const palette = [0xD4AF37, 0xF1D67A, 0xE08A3C, 0xFFF3D6, 0xB25B22];
+  for (let i = 0; i < N; i++) {
+    pos[i*3]   = (Math.random() - .5) * 30;
+    pos[i*3+1] = (Math.random() - .5) * 17;
+    pos[i*3+2] = (Math.random() - .5) * 14;
+    const c = new THREE.Color(palette[(Math.random() * palette.length) | 0]);
+    col[i*3] = c.r; col[i*3+1] = c.g; col[i*3+2] = c.b;
+    seed.push({ v: 0.14 + Math.random() * 0.5, s: Math.random() * Math.PI * 2, a: 0.15 + Math.random() * 0.5 });
+  }
+  const eg = new THREE.BufferGeometry();
+  eg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  eg.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const embers = new THREE.Points(eg, new THREE.PointsMaterial({
+    size: 0.34, map: emberTex, vertexColors: true, transparent: true, opacity: 0.9,
+    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
+  }));
+  scene.add(embers);
+
+  // --- floating lanterns (warm bokeh sprites, slow rise & sway) ---
+  const lamps = [];
+  for (let i = 0; i < 7; i++) {
+    const m = new THREE.SpriteMaterial({ map: lampTex, color: 0xffd9a0, transparent: true,
+      opacity: 0.22 + Math.random() * 0.25, depthWrite: false, blending: THREE.AdditiveBlending });
+    const sp = new THREE.Sprite(m);
+    const sc = 1.6 + Math.random() * 2.6;
+    sp.scale.set(sc, sc, 1);
+    sp.position.set((Math.random() - .5) * 24, (Math.random() - .5) * 12, -3 - Math.random() * 6);
+    sp.userData = { v: 0.06 + Math.random() * 0.12, s: Math.random() * Math.PI * 2, o: m.opacity };
+    scene.add(sp); lamps.push(sp);
+  }
+
+  // --- faint rotating gold geometry, far back — quiet luxury, not a gimmick ---
+  const knot = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(3.4, 0.85, 160, 20),
+    new THREE.MeshBasicMaterial({ color: 0xD4AF37, wireframe: true, transparent: true, opacity: 0.05 })
+  );
+  knot.position.set(8.5, 1.5, -6); scene.add(knot);
+  const ico = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(2.6, 1),
+    new THREE.MeshBasicMaterial({ color: 0xD4AF37, wireframe: true, transparent: true, opacity: 0.04 })
+  );
+  ico.position.set(-9, -2.5, -5); scene.add(ico);
+
+  function size() {
+    const w = hero.clientWidth, h = hero.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  size(); addEventListener('resize', size);
+
+  // mouse parallax (lerped, gentle; inert on touch)
+  let mx = 0, my = 0, tx = 0, ty = 0;
+  addEventListener('pointermove', e => {
+    tx = (e.clientX / innerWidth - .5) * 1.6;
+    ty = (e.clientY / innerHeight - .5) * -1.0;
+  }, { passive: true });
+
+  const posArr = eg.attributes.position.array;
+  function tick(t) {
+    const s = t * 0.001;
+    for (let i = 0; i < N; i++) {
+      posArr[i*3+1] += seed[i].v * 0.016;                       // rise
+      posArr[i*3]   += Math.sin(s * seed[i].a + seed[i].s) * 0.0035; // sway
+      if (posArr[i*3+1] > 9) posArr[i*3+1] = -9;                // wrap
+    }
+    eg.attributes.position.needsUpdate = true;
+    lamps.forEach(l => {
+      l.position.y += l.userData.v * 0.016;
+      l.position.x += Math.sin(s * 0.4 + l.userData.s) * 0.004;
+      l.material.opacity = l.userData.o * (0.75 + 0.25 * Math.sin(s * 0.9 + l.userData.s));
+      if (l.position.y > 8) l.position.y = -8;
+    });
+    knot.rotation.y = s * 0.05; knot.rotation.x = s * 0.03;
+    ico.rotation.y = -s * 0.04; ico.rotation.z = s * 0.02;
+    mx += (tx - mx) * 0.04; my += (ty - my) * 0.04;
+    camera.position.x = mx + Math.sin(s * 0.12) * 0.5;
+    camera.position.y = my + Math.cos(s * 0.1) * 0.35;
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  }
+
+  try {
+    tick(0);                                   // first frame so it's never blank
+    canvas.classList.add('on');
+    const p2d = document.getElementById('particles');
+    if (p2d) p2d.style.display = 'none';       // 3D replaces the 2D embers
+    if (!reduce3d) renderer.setAnimationLoop(tick);
+  } catch (e) { /* leave the 2D hero as-is */ }
 })();
 </script>
 </body>
