@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
 <title>Full Menu — The Kirtipur Restro</title>
+<script>/* apply saved theme before CSS paints to avoid a flash */
+try{document.documentElement.dataset.theme=localStorage.getItem('krt-theme')||'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
 <meta name="description" content="The full menu at The Kirtipur Restro — snacks, sekuwa, drinks, lassi, shakes and more. Prices in NPR." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -70,13 +72,29 @@
 
   .fineprint{margin-top:64px;text-align:center;color:var(--muted);font-size:.8rem;letter-spacing:.04em}
   .fineprint em{font-family:var(--accentf);font-style:italic;color:var(--gold);font-size:.95rem}
+
+  .theme-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);color:var(--gold);background:transparent;
+    font-size:1rem;cursor:pointer;transition:background .3s}
+  .theme-btn:hover{background:var(--gold-soft)}
+  .topbar .side{display:flex;align-items:center;gap:14px}
+
+  /* ---------- day theme (bright Pokhara) ---------- */
+  html[data-theme="day"]{
+    --bg:#EFF4F8; --bg-2:#FFFFFF; --gold:#A97B26; --gold-soft:rgba(169,123,38,.12);
+    --red:#C65A3E; --cream:#1C2940; --text:#2C3A4E; --muted:#5E6E82;
+    --line:rgba(169,123,38,.30);
+  }
+  html[data-theme="day"] .topbar{background:rgba(244,248,252,.85)}
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <a class="brand" href="index.html">The <em>Kirtipur</em> Restro</a>
-  <a class="back" href="index.html">&larr; Back to Home</a>
+  <span class="side">
+    <button class="theme-btn" id="themeToggle" aria-label="Switch day / night theme">☀</button>
+    <a class="back" href="index.html">&larr; Back to Home</a>
+  </span>
 </header>
 
 <section class="hero">
@@ -333,6 +351,20 @@
     });
   }, { threshold: 0.08 });
   cats.forEach(function (c) { io.observe(c); });
+})();
+
+/* day / night toggle — shares the saved preference with the homepage */
+(function () {
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  function glyph() { btn.textContent = document.documentElement.dataset.theme === 'day' ? '☾' : '☀'; }
+  btn.addEventListener('click', function () {
+    var t = document.documentElement.dataset.theme === 'day' ? 'night' : 'day';
+    document.documentElement.dataset.theme = t;
+    try { localStorage.setItem('krt-theme', t); } catch (e) {}
+    glyph();
+  });
+  glyph();
 })();
 </script>
 </body>
