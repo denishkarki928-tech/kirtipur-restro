@@ -112,7 +112,7 @@ if (self !== top) { try { top.location.replace(self.location.href); } catch (e) 
   #hero3d.on{opacity:1}
   .grain{position:fixed;inset:0;z-index:2;opacity:.05;pointer-events:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  .hero__inner{position:relative;z-index:3;max-width:1100px}
+  .hero__inner{position:relative;z-index:3;max-width:1100px;text-shadow:0 2px 30px rgba(0,0,0,.55)}
   .hero__pre{font-family:var(--accentf);font-style:italic;font-size:clamp(1rem,2.4vw,1.4rem);letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:26px;display:inline-flex;align-items:center;gap:16px;opacity:0}
   .hero__pre::before,.hero__pre::after{content:"";width:46px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));display:inline-block}
   .hero__pre::after{background:linear-gradient(90deg,var(--gold),transparent)}
@@ -1098,10 +1098,47 @@ document.querySelectorAll('[data-magnetic]').forEach(el=>{
   );
   ico.position.set(-9, -2.5, -5); scene.add(ico);
 
+  // --- Pokhara backdrop: Phewa Lake photo as a living 3D layer (hero only) ---
+  // Loads async; on failure the scene simply runs without it (no-fail).
+  let pg = null, photo = null, vig = null;
+  const IMG_AR = 1280 / 834;
+  new THREE.TextureLoader().load('assets/img/hero-pokhara.jpg', function (tex) {
+    tex.colorSpace = THREE.SRGBColorSpace;
+    photo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }));
+    photo.material.color.setScalar(0.58); // dim the bright sky so cream/gold text stays readable
+    photo.renderOrder = -2;
+    const c = document.createElement('canvas'); c.width = c.height = 512;
+    const g = c.getContext('2d');
+    g.fillStyle = 'rgba(15,15,16,.45)'; g.fillRect(0, 0, 512, 512);   // uniform scrim behind the title
+    const rg = g.createRadialGradient(256, 256, 150, 256, 256, 370);
+    rg.addColorStop(0, 'rgba(15,15,16,0)'); rg.addColorStop(1, 'rgba(15,15,16,.8)');
+    g.fillStyle = rg; g.fillRect(0, 0, 512, 512);                     // + darker corners, cinematic
+    vig = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false }));
+    vig.position.z = 0.05; vig.renderOrder = -1;
+    pg = new THREE.Group();                 // photo + scrim move as one — no un-dimmed edges, ever
+    pg.position.z = -10;
+    pg.add(photo); pg.add(vig);
+    scene.add(pg);
+    fitPhoto();
+    if (reduce3d) tick(0); // static path: redraw now that the backdrop exists
+  });
+  function fitPhoto() {
+    if (!pg) return;
+    const dist = camera.position.z - pg.position.z;
+    const h = 2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const w = h * camera.aspect;
+    const sc = Math.max(w / IMG_AR, h) * 1.14; // cover-fit + overscan so parallax never shows edges
+    photo.scale.set(sc * IMG_AR, sc, 1);
+    vig.scale.set(sc * IMG_AR, sc, 1);
+  }
+
   function size() {
     const w = document.documentElement.clientWidth, h = innerHeight; // clientWidth excludes the scrollbar
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
+    fitPhoto();
   }
   size(); addEventListener('resize', size);
 
@@ -1132,6 +1169,15 @@ document.querySelectorAll('[data-magnetic]').forEach(el=>{
       l.material.opacity = l.userData.o * (0.75 + 0.25 * Math.sin(s * 0.9 + l.userData.s)) * (0.35 + 0.65 * hr);
       if (l.position.y > 8) l.position.y = -8;
     });
+    if (pg) {
+      photo.material.opacity = hr;                       // full in hero, gone past it
+      vig.material.opacity = hr;
+      pg.position.x = -mx * 1.1 + Math.sin(s * 0.03) * 0.35;    // counter-parallax + slow pan
+      pg.position.y = -my * 0.7 + Math.cos(s * 0.025) * 0.22;
+      pg.rotation.y = mx * 0.03; pg.rotation.x = -my * 0.018;   // gentle 3D tilt
+      const b = 1 + 0.022 * Math.sin(s * 0.06);                 // Ken Burns breathing
+      pg.scale.set(b, b, 1);
+    }
     knot.material.opacity = 0.05 * hr; ico.material.opacity = 0.04 * hr;
     knot.rotation.y = s * 0.05; knot.rotation.x = s * 0.03;
     ico.rotation.y = -s * 0.04; ico.rotation.z = s * 0.02;
